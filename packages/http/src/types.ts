@@ -1,4 +1,4 @@
-import { IPrism, IPrismComponents, IPrismConfig } from '@stoplight/prism-core';
+import { IPrism, IPartialPrismComponents, IPrismConfig, PrismConfig } from '@stoplight/prism-core';
 import { IHttpOperation } from '@stoplight/types';
 
 export type TPrismHttpInstance<LoaderInput> = IPrism<
@@ -10,7 +10,9 @@ export type TPrismHttpInstance<LoaderInput> = IPrism<
 >;
 
 export type TPrismHttpComponents<LoaderInput> = Partial<
-  IPrismComponents<IHttpOperation, IHttpRequest, IHttpResponse, IHttpConfig, LoaderInput>
+  IPartialPrismComponents<IHttpOperation, IHttpRequest, IHttpResponse, IHttpConfig, LoaderInput> & {
+    config: PrismConfig<IHttpConfig, IHttpRequest>;
+  }
 >;
 
 // TODO: should be complete | and in the @stoplight/types repo
@@ -32,7 +34,7 @@ export interface IHttpOperationConfig {
 }
 
 export interface IHttpConfig extends IPrismConfig {
-  mock?: boolean | IHttpOperationConfig;
+  mock: boolean | IHttpOperationConfig;
 
   security?: {
     // TODO

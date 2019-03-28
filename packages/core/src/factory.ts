@@ -1,16 +1,18 @@
-import { configMergerFactory } from '.';
-import { IPrism, IPrismComponents, IPrismConfig, IValidation } from './types';
+import { configMergerFactory, IPrismComponents } from '.';
+import { IPartialPrismComponents, IPrism, IPrismConfig, IValidation } from './types';
 
 export function factory<Resource, Input, Output, Config, LoadOpts>(
-  defaultComponents: Partial<IPrismComponents<Resource, Input, Output, Config, LoadOpts>>
+  defaultComponents: Partial<IPrismComponents<Resource, Input, Output, Config, LoadOpts>> & {
+    config: Config;
+  }
 ): (
-  customComponents?: Partial<IPrismComponents<Resource, Input, Output, Config, LoadOpts>>
+  customComponents?: Partial<IPartialPrismComponents<Resource, Input, Output, Config, LoadOpts>>
 ) => IPrism<Resource, Input, Output, Config, LoadOpts> {
   const prism = (
-    customComponents?: Partial<IPrismComponents<Resource, Input, Output, Config, LoadOpts>>
+    customComponents?: Partial<IPartialPrismComponents<Resource, Input, Output, Config, LoadOpts>>
   ) => {
     const components: Partial<
-      IPrismComponents<Resource, Input, Output, Config, LoadOpts>
+      IPartialPrismComponents<Resource, Input, Output, Config, LoadOpts>
     > = Object.assign({}, defaultComponents, customComponents);
 
     // our loaded resources (HttpOperation objects, etc)

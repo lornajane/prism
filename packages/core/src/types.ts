@@ -35,6 +35,12 @@ export interface IPrismConfig {
   validate?: boolean | object;
 }
 
+export type PartialPrismConfigFactory<C, I> = (
+  input: I,
+  defaultConfig?: PartialPrismConfig<C, I>
+) => Promise<Partial<C>>;
+export type PartialPrismConfig<C, I> = Partial<C> | PartialPrismConfigFactory<C, I>;
+
 export type PrismConfigFactory<C, I> = (input: I, defaultConfig?: PrismConfig<C, I>) => Promise<C>;
 export type PrismConfig<C, I> = C | PrismConfigFactory<C, I>;
 
@@ -88,13 +94,22 @@ export interface IValidator<Resource, Input, Config, Output> {
   ) => Promise<IValidation[]>;
 }
 
-export interface IPrismComponents<Resource, Input, Output, Config, LoadOpts> {
-  config: PrismConfig<Config, Input>;
+interface IBasePrismComponents<Resource, Input, Output, Config, LoadOpts> {
   loader: ILoader<LoadOpts, Resource>;
   router: IRouter<Resource, Input, Config>;
   forwarder: IForwarder<Resource, Input, Config, Output>;
   mocker: IMocker<Resource, Input, Config, Output>;
   validator: IValidator<Resource, Input, Config, Output>;
+}
+
+export interface IPartialPrismComponents<Resource, Input, Output, Config, LoadOpts>
+  extends IBasePrismComponents<Resource, Input, Output, Config, LoadOpts> {
+  config: PartialPrismConfig<Config, Input>;
+}
+
+export interface IPrismComponents<Resource, Input, Output, Config, LoadOpts>
+  extends IBasePrismComponents<Resource, Input, Output, Config, LoadOpts> {
+  config: PrismConfig<Config, Input>;
 }
 
 export interface IPrismInput<I> {

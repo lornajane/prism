@@ -9,6 +9,7 @@ describe('graph', () => {
     let customLoaderId = 0;
 
     const createInstance = factory<any, any, any, any, { id: number }>({
+      config: {},
       // the default loader, what implementations of prism define (prism-http, etc)
       loader: {
         load: async opts => {
@@ -53,6 +54,7 @@ describe('graph', () => {
 
   test('load calls loader and sets resources', async () => {
     const createInstance = factory<any, any, any, any, { id: number }>({
+      config: {},
       loader: {
         load: async opts => {
           return [opts ? opts.id : 0];
@@ -83,9 +85,9 @@ describe('graph', () => {
         (configMergerFactory as jest.Mock).mockReturnValue(configMergerStub);
 
         const input = {};
-        const defaultConfig = 'default';
-        const customConfig = 'custom';
-        const paramConfig = 'param';
+        const defaultConfig = { cfg: 'default' };
+        const customConfig = { cfg: 'custom' };
+        const paramConfig = { cfg: 'param' };
         const createInstance = factory<any, any, any, any, any>({
           config: defaultConfig,
         });
