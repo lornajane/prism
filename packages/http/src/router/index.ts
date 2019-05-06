@@ -62,30 +62,44 @@ export const router: IRouter<IHttpOperation, IHttpRequest, IHttpConfig> = {
     });
 
     if (requestBaseUrl) {
-      if (matches.every(match => match.serverMatch === null)) {
+      if (noServerConfigurationProvided(matches)) {
         throw new Error(NO_SERVER_CONFIGURATION_PROVIDED_ERROR);
       }
 
-      if (matches.every(match => !!match.serverMatch && match.serverMatch === MatchType.NOMATCH)) {
+      if (noServerConfigurationMatch(matches)) {
         throw new Error(NO_SERVER_MATCHED_ERROR);
       }
     }
 
-    if (!matches.some(match => match.pathMatch !== MatchType.NOMATCH)) {
+    if (noPathMatch(matches)) {
       throw new Error(NO_PATH_MATCHED_ERROR);
     }
 
-    if (
-      !matches.some(
-        match => match.pathMatch !== MatchType.NOMATCH && match.methodMatch !== MatchType.NOMATCH
-      )
-    ) {
+    if (noMethodMatchInPath(matches)) {
       throw new Error(NO_METHOD_MATCHED_ERROR);
     }
 
     return disambiguateMatches(matches);
   },
 };
+
+function noMethodMatchInPath(matches: IMatch[]) {
+  return !matches.some(
+    match => match.pathMatch !== MatchType.NOMATCH && match.methodMatch !== MatchType.NOMATCH
+  );
+}
+
+function noPathMatch(matches: IMatch[]) {
+  return !matches.some(match => match.pathMatch !== MatchType.NOMATCH);
+}
+
+function noServerConfigurationMatch(matches: IMatch[]) {
+  return matches.every(match => !!match.serverMatch && match.serverMatch === MatchType.NOMATCH);
+}
+
+function noServerConfigurationProvided(matches: IMatch[]) {
+  return matches.every(match => match.serverMatch === null);
+}
 
 function matchServer(servers: IServer[], requestBaseUrl: string) {
   const serverMatches = servers
