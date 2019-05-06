@@ -40,15 +40,16 @@ interface IRandomPathOptions {
 }
 
 export function randomPath(opts: IRandomPathOptions = defaultRandomPathOptions): string {
-  defaults(opts, defaultRandomPathOptions);
+  const optsWithDefaults = defaults({}, opts, defaultRandomPathOptions);
 
   const randomPathFragments = randomArray(
-    () => (opts.includeTemplates && chance.bool() ? `{${chance.word()}}` : chance.word()),
-    opts.pathFragments
+    () =>
+      optsWithDefaults.includeTemplates && chance.bool() ? `{${chance.word()}}` : chance.word(),
+    optsWithDefaults.pathFragments
   );
 
-  const leadingSlash = opts.leadingSlash ? '/' : '';
-  const trailingSlash = opts.trailingSlash ? '/' : '';
+  const leadingSlash = optsWithDefaults.leadingSlash ? '/' : '';
+  const trailingSlash = optsWithDefaults.trailingSlash ? '/' : '';
 
   return `${leadingSlash}${randomPathFragments.join('/')}${trailingSlash}`;
 }
