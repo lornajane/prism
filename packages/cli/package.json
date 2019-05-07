@@ -50,6 +50,7 @@
   },
   "scripts": {
     "prepack": "oclif-dev manifest",
+    "postpack": "oclif-dev pack",
     "version": "oclif-dev readme && git add README.md",
     "cli": "node -r tsconfig-paths/register bin/run"
   },

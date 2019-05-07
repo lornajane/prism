@@ -36,6 +36,9 @@ jobs:
       - run:
           name: Run build
           command: yarn typecheck
+      - run:
+          name: CLI Build
+          command: yarn workspace @stoplight/prism-cli && yarn workspace @stoplight/prism-cli pack
   publish:
     docker:
       - image: circleci/node:10
